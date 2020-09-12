@@ -4,6 +4,7 @@
 #include <linux/kernel.h>         // Contains types, macros, functions for the kernel
 #include <linux/fs.h>             // Header for the Linux file system support
 #include <linux/uaccess.h>          // Required for the copy to user function
+#include <linux/moduleparam.h> 
 #define  DEVICE_NAME "Crypto"    ///< The device will appear at /dev/ebbchar using this value
 #define  CLASS_NAME  "Cry"        ///< The device class -- this is a character device driver
 
@@ -16,8 +17,17 @@ static int    majorNumber;                  ///< Stores the device number -- det
 static char   message[256] = {0};           ///< Memory for the string that is passed from userspace
 static short  size_of_message;              ///< Used to remember the size of the string stored
 static int    numberOpens = 0;              ///< Counts the number of times the device is opened
-static struct class*  ebbcharClass  = NULL; ///< The device-driver class struct pointer
-static struct device* ebbcharDevice = NULL; ///< The device-driver device struct pointer
+static struct class*  moduleClass  = NULL; ///< The device-driver class struct pointer
+static struct device* moduleDevice = NULL; ///< The device-driver device struct pointer
+static char* key = "0123456789ABCDEF";
+static char* iv = "0123456789ABCDEF";
+
+
+module_param(key, charp, 0000);
+MODULE_PARM_DESC(key, "Chave do modulo");
+
+module_param(iv, charp, 0000);
+MODULE_PARM_DESC(iv, "iv do modulo");
 
 // The prototype functions for the character driver -- must come before the struct definition
 static int     dev_open(struct inode *, struct file *);
@@ -59,23 +69,25 @@ static int __init ebbchar_init(void){
    printk(KERN_INFO "Base: registered correctly with major number %d\n", majorNumber);
 
    // Register the device class
-   ebbcharClass = class_create(THIS_MODULE, CLASS_NAME);
-   if (IS_ERR(ebbcharClass)){                // Check for error and clean up if there is
+   moduleClass = class_create(THIS_MODULE, CLASS_NAME);
+   if (IS_ERR(moduleClass)){                // Check for error and clean up if there is
       unregister_chrdev(majorNumber, DEVICE_NAME);
       printk(KERN_ALERT "Failed to register device class\n");
-      return PTR_ERR(ebbcharClass);          // Correct way to return an error on a pointer
+      return PTR_ERR(moduleClass);          // Correct way to return an error on a pointer
    }
    printk(KERN_INFO "Base: device class registered correctly\n");
 
    // Register the device driver
-   ebbcharDevice = device_create(ebbcharClass, NULL, MKDEV(majorNumber, 0), NULL, DEVICE_NAME);
-   if (IS_ERR(ebbcharDevice)){               // Clean up if there is an error
-      class_destroy(ebbcharClass);           // Repeated code but the alternative is goto statements
+   moduleDevice = device_create(moduleClass, NULL, MKDEV(majorNumber, 0), NULL, DEVICE_NAME);
+   if (IS_ERR(moduleDevice)){               // Clean up if there is an error
+      class_destroy(moduleClass);           // Repeated code but the alternative is goto statements
       unregister_chrdev(majorNumber, DEVICE_NAME);
       printk(KERN_ALERT "Failed to create the device\n");
-      return PTR_ERR(ebbcharDevice);
+      return PTR_ERR(moduleDevice);
    }
    printk(KERN_INFO "Base: device created correctly\n"); // Made it! device was initialized
+   printk(KERN_INFO "A chave foi: %s\n", key);
+   printk(KERN_INFO "O iv: %s\n", iv);
    return 0;
 }
 
@@ -85,9 +97,9 @@ static int __init ebbchar_init(void){
  */
 static void __exit ebbchar_exit(void){
    mutex_destroy(&ebbchar_mutex); 
-   device_destroy(ebbcharClass, MKDEV(majorNumber, 0));     // remove the device
-   class_unregister(ebbcharClass);                          // unregister the device class
-   class_destroy(ebbcharClass);                             // remove the device class
+   device_destroy(moduleClass, MKDEV(majorNumber, 0));     // remove the device
+   class_unregister(moduleClass);                          // unregister the device class
+   class_destroy(moduleClass);                             // remove the device class
    unregister_chrdev(majorNumber, DEVICE_NAME);             // unregister the major number
    printk(KERN_INFO "Base: Goodbye from the LKM!\n");
 }
