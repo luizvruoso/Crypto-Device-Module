@@ -1,11 +1,27 @@
-#include <linux/init.h>           // Macros used to mark up functions e.g. __init __exit
-#include <linux/module.h>         // Core header for loading LKMs into the kernel
-#include <linux/device.h>         // Header to support the kernel Driver Model
-#include <linux/kernel.h>         // Contains types, macros, functions for the kernel
-#include <linux/fs.h>             // Header for the Linux file system support
-#include <linux/uaccess.h>          // Required for the copy to user function
-#include <linux/moduleparam.h> 
-void hash(char* string,int size_of_message, char*key, char*iv){
+#include <linux/kernel.h>
+#include <linux/moduleparam.h>
+#include <linux/ratelimit.h>
+#include <linux/file.h>
+#include <linux/crypto.h>
+#include <linux/scatterlist.h>
+#include <linux/err.h>
+#include <linux/slab.h>
+#include <crypto/hash.h>
+
+void hash(char* string,int size_of_message){
+	struct shash_desc *desc; //serve para configurar o hashing
+	struct crypto_shash *alg; //shash
+	char hashval; //armazena a hash
+	int final;
 	string[0]='7';
-	return;
+
+	alg = crypto_alloc_shash("sha1", 0, 0); //Allocate a cipher handle for an shash
+	desc = vmalloc(sizeof(struct shash_desc));
+	hashval = vmalloc(SHA1_SIZE_BYTES + 1);
+
+	crypto_shash_init(desc);
+	crypto_shash_update(desc, string, size_of_message);
+	final = crypto_shash_final(desc, hashval);
+
+	return final;
 }
