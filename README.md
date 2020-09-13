@@ -13,3 +13,6 @@ max keysize  : 32 <br>
 ivsize       : 16 <br>
 chunksize    : 16 <br>
 walksize     : 16 <br>
+
+
+alias showJournal='journalctl --since "1 hour ago" | grep kernel'^C
