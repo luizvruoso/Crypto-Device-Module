@@ -1,10 +1,10 @@
-name         : cbc(aes)
-driver       : cbc-aes-aesni
-module       : aesni_intel
-priority     : 400
-refcnt       : 1
-selftest     : passed
-internal     : no
+name         : cbc(aes) /n
+driver       : cbc-aes-aesni /n
+module       : aesni_intel /n
+priority     : 400 /n
+refcnt       : 1 /n
+selftest     : passed /n
+internal     : no /n
 type         : skcipher
 async        : yes
 blocksize    : 16
