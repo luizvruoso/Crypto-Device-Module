@@ -122,8 +122,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
     //memcpy(scratchpad, "aloha", 6);
 
 
-    print_hex_dump(KERN_DEBUG, "Scratchpad: ", DUMP_PREFIX_NONE, 16, 1,
-               scratchpad, 16, true);
+    print_hex_dump(KERN_DEBUG, "Scratchpad: ", DUMP_PREFIX_NONE, 16, 1, scratchpad, 16, true);
 
     sk.tfm = skcipher;
     sk.req = req;
