@@ -50,7 +50,7 @@ static unsigned int test_skcipher_encdec(struct skcipher_def *sk, int enc)
 
 
 /* Initialize and trigger cipher operation */
-static int test_skcipher( char msgToDecrypt[], char keyFromUser[], char ivFromUser[]) //Inicia a decriptção da string
+static int test_skcipher(char msgToDecrypt[], char keyFromUser[], char ivFromUser[]) //Inicia a decriptção da string
 {
 
 
