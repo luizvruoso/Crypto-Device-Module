@@ -19,22 +19,22 @@ void hash(char* string,int size_of_message){
 
 	tfm = crypto_alloc_shash("sha1", 0, 0); //Allocate a cipher handle for an shash *(const char * alg_name, u32 type, u32 mask)* 
 	desc = vmalloc(sizeof(struct shash_desc));
-    if(!desc)goto hash_skip;
+    	if(!desc)goto hash_skip;
 
-    desc->tfm = tfm; //Iniciando variavel
-    desc->flags = 0x0; //Iniciando variavel
+   	desc->tfm = tfm; //Iniciando variavel
+    	desc->flags = 0x0; //Iniciando variavel
 
 	hashval = vmalloc(SIZE_SHA1 + 1);
-    if(!hashval)goto hash_skip;
+    	if(!hashval)goto hash_skip;
 
 	crypto_shash_init(desc); //Configures hashing engine according to the supplied hash_desc
 	crypto_shash_update(desc, string, size_of_message); //Performs the actual hashing method on sting
 	final = crypto_shash_final(desc, hashval); //Sends hash to character array
 
 hash_skip:
-    if(tfm) crypto_free_shash(tfm);
-    if(desc) vfree(desc);
-    if(hashval) vfree(hashval);
-    return final;
+    	if(tfm) crypto_free_shash(tfm);
+    	if(desc) vfree(desc);
+    	if(hashval) vfree(hashval);
+    	return final;
 }
 
