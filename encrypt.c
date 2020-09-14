@@ -52,7 +52,7 @@ static unsigned int test_skcipher_encdec(struct skcipher_def *sk,
 
 
 /* Initialize and trigger cipher operation */
-static int test_skcipher(void) //Inicia a encriptção da string
+static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUser[]) //Inicia a encriptção da string
 {
     struct skcipher_def sk;
     struct crypto_skcipher *skcipher = NULL;
@@ -63,6 +63,9 @@ static int test_skcipher(void) //Inicia a encriptção da string
     int ret = -EFAULT;
 	char *resultdata = NULL;
 	int i=0;
+
+    printk("MSG: %s, Key: %s, IV: %s \n",msgToEncypt, keyFromUser, ivFromUser);
+
 
     skcipher = crypto_alloc_skcipher("cbc(aes)", 0, 0);
     if (IS_ERR(skcipher)) {
@@ -84,18 +87,16 @@ static int test_skcipher(void) //Inicia a encriptção da string
     /* AES 256 with random key */
     /*PARA AES 128 SELECT 16 BYTES RANDOM*/
     //get_random_bytes(&key, 32);
-	strcpy(key, "0123456789ABCDEF");
-    if (crypto_skcipher_setkey(skcipher, key, 32)) {
+	strcpy(key, keyFromUser);
+    if (crypto_skcipher_setkey(skcipher, key, 16)) {
         pr_info("key could not be set\n");
         ret = -EAGAIN;
         goto out;
     }
-    print_hex_dump(KERN_DEBUG, "KEY: ", DUMP_PREFIX_NONE, 32, 1,
-               key, 32, true);
+    print_hex_dump(KERN_DEBUG, "KEY: ", DUMP_PREFIX_NONE, 16, 1,
+               key, 16, true);
 			
 		
-
-	
 
     /* IV will be random */
     ivdata = kmalloc(16, GFP_KERNEL);
@@ -104,7 +105,7 @@ static int test_skcipher(void) //Inicia a encriptção da string
         goto out;
     }
     //get_random_bytes(ivdata, 16);
-	strcpy(ivdata, "0123456789ABCDEF");
+	strcpy(ivdata, ivFromUser);
 
     print_hex_dump(KERN_DEBUG, "IVdata: ", DUMP_PREFIX_NONE, 16, 1,
                ivdata, 16, true);
@@ -117,7 +118,7 @@ static int test_skcipher(void) //Inicia a encriptção da string
         goto out;
     }
     //get_random_bytes(scratchpad, 16);
-	strcpy(scratchpad, "aloha"); // copiando string para cifrar
+	strcpy(scratchpad, msgToEncypt); // copiando string para cifrar
     //memcpy(scratchpad, "aloha", 6);
 
 
@@ -140,10 +141,10 @@ static int test_skcipher(void) //Inicia a encriptção da string
 
 
 	resultdata = sg_virt(&sk.sg);
-     print_hex_dump(KERN_DEBUG, "Result Data: ", DUMP_PREFIX_NONE, 16, 1,
+    print_hex_dump(KERN_DEBUG, "Result Data Direct From Function: ", DUMP_PREFIX_NONE, 16, 1,
                resultdata, 16, true);
    
-
+    strcpy(msgToEncypt, resultdata);
     pr_info("Encryption triggered successfully\n");
 
 out:
@@ -160,11 +161,10 @@ out:
 
 
 void encrypt(char *string,int size_of_string ,char* localKey, char* iv){
-	string[0]='1';	
 	printk(KERN_INFO "Chave %s \n",localKey);	
 
-	printk("oi meu cu: %d \n",test_skcipher());
-
-
+    test_skcipher(string, localKey, iv);
+    print_hex_dump(KERN_DEBUG, "Result Data: ", DUMP_PREFIX_NONE, 16, 1,
+               string, 16, true);
 	return;
 }

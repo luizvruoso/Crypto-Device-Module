@@ -150,7 +150,11 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
       hash(message + 2, size_of_message - 2, key, iv);
       break;
    }
-   error_count = copy_to_user(buffer, message + 2, size_of_message - 2);
+
+   //printk("DEV READ: %d \n", strlen(message)-2);
+   size_of_message = 16;
+
+   error_count = copy_to_user(buffer, message + 2, size_of_message);
 
    if (error_count == 0)
    { // if true then have success
@@ -174,7 +178,7 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
  */
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
 {
-   sprintf(message, "%s(%zu letters)", buffer, len); // appending received string with its length
+   sprintf(message, "%s", buffer); // appending received string with its length
    size_of_message = strlen(message);                // store the length of the stored message
    printk(KERN_INFO "Base: Received %zu characters from the user\n", len);
    return len;
