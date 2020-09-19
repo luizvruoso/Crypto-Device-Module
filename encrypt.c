@@ -20,7 +20,6 @@
 
 
 
-
 /* tie all data structures together */
 struct skcipher_def {
     struct scatterlist sg; // too much information, sory. tem a ver com DMA
@@ -99,7 +98,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
 		
 
     /* IV will be random */
-    ivdata = kmalloc(16, GFP_KERNEL);
+    ivdata = vmalloc(16);
     if (!ivdata) {
         pr_info("could not allocate ivdata\n");
         goto out;
@@ -112,7 +111,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
 
 
     /* Input data will be random */
-    scratchpad = kmalloc(16, GFP_KERNEL);
+    scratchpad = vmalloc(16);
     if (!scratchpad) {
         pr_info("could not allocate scratchpad\n");
         goto out;
@@ -152,9 +151,9 @@ out:
     if (req)
         skcipher_request_free(req);
     if (ivdata)
-        kfree(ivdata);
+        vfree(ivdata);
     if (scratchpad)
-        kfree(scratchpad);
+        vfree(scratchpad);
     return ret;
 }
 
