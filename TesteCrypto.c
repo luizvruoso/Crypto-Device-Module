@@ -28,13 +28,12 @@ void menu(){
 }
 
 void grupo(){
-    printf("enter te desired option\n");
     printf("Gabriel Gonçalves Mattos Santini----18189084\n");
     printf("Luiz Vinicius dos Santos Ruoso------18233486\n");
     printf("Marcelo Germani Olmos---------------18048298\n");
     printf("Victor Felipe dos Santos------------18117820\n");
     printf("Victor Luiz Fraga Soldera-----------18045674\n");
-    printf("press 1 to exit\n");
+    printf("press 1 to exit the program\n");
 }
 
 char HexToChar(char c){
@@ -45,6 +44,8 @@ char HexToChar(char c){
 int main(){
     int choice, file, grpVar;
     file = open("/dev/crypto", O_RDONLY|O_WRONLY);
+    int aux, aux2;
+    char enviar[BUFFER];
     while (choice!=4){
         do {
             menu();
@@ -57,23 +58,32 @@ int main(){
                 return errno;
             }
             system("cls");
-            printf("digite a string que vai ser");
+            printf("type the string that you want to send");
             if(choice == 0){
-                printf("cifrada");
+                printf("Encrypted");
             }
             if(choice == 1){
-                printf("decifrada");
+                printf("Decripted");
             }
             if(choice == 2){
-                printf("hasheada");
+                printf("Hashed");
             }
             if(choice == 3){
                 grupo();
-                scanf("%i", &grpVar);
-                if (grpVar==1){
-                    
-                }
+                while(1){
+                    getch("%i", &grpVar);
+                    if (grpVar==1){
+                        return                    
+                    }
+                }                   
             }
+            fflush(stdin);
+            scanf("[^\n]%*c", enviar);
+            aux = strlen(enviar);
+            for(int j=0 ;j < aux; j++){
+                if (enviar[j]<='z' && enviar[j]>='a') enviar[j]
+            }
+            
         }        
     }
 }
