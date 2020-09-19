@@ -18,19 +18,24 @@
 #include <linux/err.h>
 #include <linux/vmalloc.h>
 
-
-
 /* tie all data structures together */
 struct skcipher_def {
-    struct scatterlist sg; // too much information, sory. tem a ver com DMA
+    struct scatterlist sg; 
     struct crypto_skcipher *tfm;
     struct skcipher_request *req; //struct com definições para solicitar a criptografia
-    struct crypto_wait wait;
+    struct crypto_wait wait; // struct para requisicao
 };
 
+
+void encrypt(char *string,int size_of_string ,char* localKey, char* iv);
+static unsigned int test_skcipher_encdec(struct skcipher_def *sk, int enc);
+static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUser[]);
+
+
+
+
 /* Perform cipher operation */
-static unsigned int test_skcipher_encdec(struct skcipher_def *sk,
-                     int enc)
+static unsigned int test_skcipher_encdec(struct skcipher_def *sk, int enc)
 {
     int rc;
 	char *resultdata = NULL;
@@ -63,7 +68,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
 	char *resultdata = NULL;
 	int i=0;
 
-    printk("MSG: %s, Key: %s, IV: %s \n",msgToEncypt, keyFromUser, ivFromUser);
+    //printk("MSG: %s, Key: %s, IV: %s \n",msgToEncypt, keyFromUser, ivFromUser);
 
 
     skcipher = crypto_alloc_skcipher("cbc(aes)", 0, 0);
@@ -106,8 +111,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
     //get_random_bytes(ivdata, 16);
 	strcpy(ivdata, ivFromUser);
 
-    print_hex_dump(KERN_DEBUG, "IVdata: ", DUMP_PREFIX_NONE, 16, 1,
-               ivdata, 16, true);
+    //print_hex_dump(KERN_DEBUG, "IVdata: ", DUMP_PREFIX_NONE, 16, 1, ivdata, 16, true);
 
 
     /* Input data will be random */
@@ -121,7 +125,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
     //memcpy(scratchpad, "aloha", 6);
 
 
-    print_hex_dump(KERN_DEBUG, "Scratchpad: ", DUMP_PREFIX_NONE, 16, 1, scratchpad, 16, true);
+    //print_hex_dump(KERN_DEBUG, "Scratchpad: ", DUMP_PREFIX_NONE, 16, 1, scratchpad, 16, true);
 
     sk.tfm = skcipher;
     sk.req = req;
@@ -139,8 +143,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
 
 
 	resultdata = sg_virt(&sk.sg);
-    print_hex_dump(KERN_DEBUG, "Result Data Direct From Function: ", DUMP_PREFIX_NONE, 16, 1,
-               resultdata, 16, true);
+    //print_hex_dump(KERN_DEBUG, "Result Data Direct From Function: ", DUMP_PREFIX_NONE, 16, 1, resultdata, 16, true);
    
     strcpy(msgToEncypt, resultdata);
     pr_info("Encryption triggered successfully\n");
@@ -159,7 +162,7 @@ out:
 
 
 void encrypt(char *string,int size_of_string ,char* localKey, char* iv){
-	printk(KERN_INFO "Chave %s \n",localKey);	
+	//printk(KERN_INFO "Chave %s \n",localKey);	
 
     test_skcipher(string, localKey, iv);
     print_hex_dump(KERN_DEBUG, "Result Data: ", DUMP_PREFIX_NONE, 16, 1,
