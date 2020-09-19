@@ -19,22 +19,61 @@ unsigned char receber[BUFFER];
 
 
 void menu(){
-    printf("enter te desired option");
-    printf("0) Encrypt String ");
-    printf("1) Decrypt String ");
-    printf("2) Hash Resume ");
-    printf("3) Group ");
-    printf("4) Exit ");
+    printf("enter te desired option\n");
+    printf("0) Encrypt String\n");
+    printf("1) Decrypt String\n");
+    printf("2) Hash Resume\n");
+    printf("3) Group\n");
+    printf("4) Exit\n");
 }
+
+void grupo(){
+    printf("enter te desired option\n");
+    printf("Gabriel Gonçalves Mattos Santini----18189084\n");
+    printf("Luiz Vinicius dos Santos Ruoso------18233486\n");
+    printf("Marcelo Germani Olmos---------------18048298\n");
+    printf("Victor Felipe dos Santos------------18117820\n");
+    printf("Victor Luiz Fraga Soldera-----------18045674\n");
+    printf("press 1 to exit\n");
+}
+
+char HexToChar(char c){
+    if (c<='9') return c-'0';
+    return c - 'A' + (char)10;
+}
+
 int main(){
-    int choice;
+    int choice, file, grpVar;
+    file = open("/dev/crypto", O_RDONLY|O_WRONLY);
     while (choice!=4){
         do {
             menu();
             scanf("%i", &choice);
         }while(choice < 0 || choice > 4);
         system ("cls");
-        
-
+        if(choice != 4){
+            if(0 > file){
+                printf("erro cod. %d, %d", file, (int)errno);
+                return errno;
+            }
+            system("cls");
+            printf("digite a string que vai ser");
+            if(choice == 0){
+                printf("cifrada");
+            }
+            if(choice == 1){
+                printf("decifrada");
+            }
+            if(choice == 2){
+                printf("hasheada");
+            }
+            if(choice == 3){
+                grupo();
+                scanf("%i", &grpVar);
+                if (grpVar==1){
+                    
+                }
+            }
+        }        
     }
 }
