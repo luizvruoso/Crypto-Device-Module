@@ -43,9 +43,11 @@ char HexToChar(char c){
 
 int main(){
     int choice, file, grpVar;
+    char enviar_string[BUFFER-2];
     file = open("/dev/crypto", O_RDONLY|O_WRONLY);
     int aux, aux2;
     char enviar[BUFFER];
+    char escolher[] = {'c','d','h'}
     while (choice!=4){
         do {
             menu();
@@ -82,8 +84,31 @@ int main(){
             aux = strlen(enviar);
             for(int j=0 ;j < aux; j++){
                 if (enviar[j]<='z' && enviar[j]>='a') enviar[j]
+                enviar[j]-=32;
+            }
+            int tamanho = 0;
+            while (receber[tamanho] != 0) tamanho++;
+            
+		    unsigned char c;
+
+		    printf("Hexadecimaç:");
+		    for(int i=0;i<tamanho;i++) {
+			   printf("%c", receber[i]);
+            }
+	
+		    tamanho /= 2;
+		    printf("ASCII");
+		    for(int i=0;i<tamanho;i++) 	{		
+			    printf(" %c", (char)(HexToChar(receber[2*i])*16 + HexToChar(receber[2*i+1])));
             }
             
+	
+	        for(int i=0;i<BUFFER;i++){
+                 receive[i] = 0;
+            }
+		    getchar();
+		    enviar_string[0] = 0;
+		}		
         }        
     }
 }
