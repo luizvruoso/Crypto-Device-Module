@@ -101,7 +101,8 @@ static int test_skcipher(char msgToDecrypt[], char keyFromUser[], char ivFromUse
     print_hex_dump(KERN_DEBUG, "KEY: ", DUMP_PREFIX_NONE, 16, 1, key, 16, true);
 			
     /* IV will be random */
-    ivdata = kmalloc(16, GFP_KERNEL);
+    //ivdata = kmalloc(16, GFP_KERNEL);
+    ivdata = vmalloc(16);
     if (!ivdata) {
         pr_info("could not allocate ivdata\n");
         goto out;
@@ -114,7 +115,8 @@ static int test_skcipher(char msgToDecrypt[], char keyFromUser[], char ivFromUse
 
 
     /* Input data will be random */
-    scratchpad = kmalloc(16, GFP_KERNEL);
+    //scratchpad = kmalloc(16, GFP_KERNEL);
+    scratchpad = vmalloc(16);
     if (!scratchpad) {
         pr_info("could not allocate scratchpad\n");
         goto out;
