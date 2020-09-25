@@ -162,9 +162,9 @@ out:
     if (req)
         skcipher_request_free(req);
     if (ivdata)
-        kfree(ivdata);
+        vfree(ivdata);
     if (scratchpad)
-        kfree(scratchpad);
+        vfree(scratchpad);
     return ret;
 }
 
