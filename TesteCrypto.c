@@ -47,7 +47,7 @@ int main(){
     file = open("/dev/crypto", O_RDONLY|O_WRONLY);
     int aux, aux2;
     char enviar[BUFFER];
-    char escolher[] = {'c','d','h'}
+    char escolher[] = {'c','d','h'};
     while (choice!=4){
         do {
             menu();
@@ -75,7 +75,7 @@ int main(){
                 while(1){
                     getch("%i", &grpVar);
                     if (grpVar==1){
-                        return                    
+                        return;                    
                     }
                 }                   
             }
@@ -83,7 +83,7 @@ int main(){
             scanf("[^\n]%*c", enviar);
             aux = strlen(enviar);
             for(int j=0 ;j < aux; j++){
-                if (enviar[j]<='z' && enviar[j]>='a') enviar[j]
+                if (enviar[j]<='z' && enviar[j]>='a') enviar[j];
                 enviar[j]-=32;
             }
             int tamanho = 0;
@@ -91,7 +91,7 @@ int main(){
             
 		    unsigned char c;
 
-		    printf("Hexadecimaç:");
+		    printf("Hexadecimal:");
 		    for(int i=0;i<tamanho;i++) {
 			   printf("%c", receber[i]);
             }
@@ -104,11 +104,11 @@ int main(){
             
 	
 	        for(int i=0;i<BUFFER;i++){
-                 receive[i] = 0;
+                receber[i] = 0;
             }
 		    getchar();
 		    enviar_string[0] = 0;
-		}		
+	    	}		
         }        
     }
 }
