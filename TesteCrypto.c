@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#include <conio.h>
 
 #define BUFFER 258
 unsigned char receber[BUFFER];
@@ -71,9 +72,9 @@ int main(){
             if(choice == 3){
                 grupo();
                 while(1){
-                    getch("%i", &grpVar);
+                    grpVar = getch();
                     if (grpVar==1){
-                        return;                    
+                        return 0;                    
                     }
                 }                   
             }
@@ -109,4 +110,3 @@ int main(){
 	    	}		
         }        
     }
-}
