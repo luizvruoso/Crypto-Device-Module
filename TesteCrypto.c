@@ -53,13 +53,11 @@ int main(){
             menu();
             scanf("%i", &choice);
         }while(choice < 0 || choice > 4);
-        system ("cls");
         if(choice != 4){
             if(0 > file){
                 printf("erro cod. %d, %d", file, (int)errno);
                 return errno;
             }
-            system("cls");
             printf("type the string that you want to send");
             if(choice == 0){
                 printf("Encrypted");
@@ -79,7 +77,7 @@ int main(){
                     }
                 }                   
             }
-            fflush(stdin);
+            getchar();
             scanf("[^\n]%*c", enviar);
             aux = strlen(enviar);
             for(int j=0 ;j < aux; j++){
