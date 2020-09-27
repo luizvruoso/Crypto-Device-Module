@@ -1,3 +1,13 @@
+/*
+   Gabriel Gonçalves Mattos Santini -  18189084
+	Luiz Vinicius dos Santos Ruoso - 18233486
+   Marcelo Germani Olmos -  18048298    
+   Victor Felipe dos Santos -  18117820
+   Victor Luiz Fraga Soldera - 18045674
+*/
+
+
+
 
 #include <linux/init.h>           // Macros used to mark up functions e.g. __init __exit
 #include <linux/module.h>         // Core header for loading LKMs into the kernel
@@ -163,7 +173,8 @@ out:
 
 void encrypt(char *string,int size_of_string ,char* localKey, char* iv){
 	//printk(KERN_INFO "Chave %s \n",localKey);	
-
+print_hex_dump(KERN_DEBUG, "Result Data1: ", DUMP_PREFIX_NONE, 16, 1,
+               string, 16, true);
     test_skcipher(string, localKey, iv);
     print_hex_dump(KERN_DEBUG, "Result Data: ", DUMP_PREFIX_NONE, 16, 1,
                string, 16, true);

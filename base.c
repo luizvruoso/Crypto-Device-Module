@@ -1,3 +1,13 @@
+
+/*
+   Gabriel Gonçalves Mattos Santini -  18189084
+	Luiz Vinicius dos Santos Ruoso - 18233486
+   Marcelo Germani Olmos -  18048298    
+   Victor Felipe dos Santos -  18117820
+   Victor Luiz Fraga Soldera - 18045674
+*/
+
+
 #include <linux/init.h>    // Macros used to mark up functions e.g. __init __exit
 #include <linux/module.h>  // Core header for loading LKMs into the kernel
 #include <linux/device.h>  // Header to support the kernel Driver Model
@@ -15,6 +25,7 @@ MODULE_VERSION("0.1");                                               ///< A vers
 
 static int majorNumber;                    ///< Stores the device number -- determined automatically
 static char message[256] = {0};            ///< Memory for the string that is passed from userspace
+//static char * message;
 static short size_of_message;              ///< Used to remember the size of the string stored
 static int numberOpens = 0;                ///< Counts the number of times the device is opened
 static struct class *moduleClass = NULL;   ///< The device-driver class struct pointer
@@ -142,20 +153,26 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
    {
    case 'c':
       encrypt(message + 2, size_of_message - 2, key, iv);
+      size_of_message = 16;
+
       break;
    case 'd':
       decrypt(message + 2, size_of_message - 2, key, iv);
+      size_of_message = 16;
+
       break;
    case 'h':
+   
       hash(message + 2, size_of_message - 2, key, iv);
+      size_of_message = 20;
       break;
+
+   
    }
 
    //printk("DEV READ: %d \n", strlen(message)-2);
-   size_of_message = 16;
 
    error_count = copy_to_user(buffer, message + 2, size_of_message);
-
    if (error_count == 0)
    { // if true then have success
       printk(KERN_INFO "Base: Sent %d characters to the user\n", size_of_message);
@@ -179,8 +196,10 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
 {
    sprintf(message, "%s", buffer); // appending received string with its length
-   size_of_message = strlen(message);                // store the length of the stored message
+   size_of_message = strlen(message);// store the length of the stored message
    printk(KERN_INFO "Base: Received %zu characters from the user\n", len);
+   
+
    return len;
 }
 
@@ -193,6 +212,8 @@ static int dev_release(struct inode *inodep, struct file *filep)
 {
    mutex_unlock(&mod_mutex);
    printk(KERN_INFO "Base: Device successfully closed\n");
+   memset(message, 0, 100);
+
    return 0;
 }
 
