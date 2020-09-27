@@ -37,6 +37,8 @@ void hash(char * string, int size_of_message) {
 	char * hashval; //Armazena a hash da nossa sting
 	int final;
 	
+	print_hex_dump(KERN_DEBUG, "Data to HASH: ", DUMP_PREFIX_NONE, 20, 1,
+               string, 20, true);
 
 	tfm = crypto_alloc_shash("sha1", 0, 0); //Allocate a cipher handle for an shash *(const char * alg_name, u32 type, u32 mask)* 
 	desc = vmalloc(sizeof(struct shash_desc));

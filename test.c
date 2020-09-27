@@ -95,7 +95,7 @@ int main(){
 
    }while(ctrlWhileOp);
 
-  
+   close(fd);
    return 0;
 
 }
@@ -134,8 +134,10 @@ void DumpHex(const void* data, size_t size) {
 void lerString(char *aux){
    getchar();
    printf("Digite sua String: \n");
-   fgets(aux, 33, stdin);
-    
+   //fgets(aux, 33, stdin);
+   scanf("%[^\n]s", aux);
+   getchar();
+ 
 }
 
 void writeToModule(int fd, char *stringToSend){
@@ -175,7 +177,7 @@ void readFromModule(int fd, int size){
 void callEncriptacao(int fd){
 
    char aux[33]={0};
-   char stringToSend[35];
+   char stringToSend[35]={0};
    int ret;
    lerString(aux);
    
@@ -195,10 +197,10 @@ void callEncriptacao(int fd){
 
 void callDecriptcao(int fd){
    char aux[33]={0};
-   char stringToSend[35];
+   char stringToSend[35]={0};
    int ret;
    lerString(aux);
-   
+   toLower(aux);
   
    stringToSend[0] = 'd';
    stringToSend[1] = ' ';
@@ -216,15 +218,18 @@ void callDecriptcao(int fd){
 
 void callHashResume(int fd){
    char aux[41]={0};
-   char stringToSend[45];
+   char stringToSend[45]={0};
    int ret;
    lerString(aux);
+   toLower(aux);
+
    
-  
+   //printf("%s \n", aux);
+   //DumpHex(aux, 40);
    stringToSend[0] = 'h';
    stringToSend[1] = ' ';
    strcpy(stringToSend+2, aux);
-
+   //stringToSend[45]= '\0';
    
    writeToModule(fd, stringToSend);
    readFromModule(fd, 20);
@@ -242,3 +247,13 @@ void menu(){
     printf(" e ) Exit\n");
 }
 
+void toLower(char string[]){
+
+   int i=0;
+
+   for(i =0; i<strlen(string); i++){
+      string[i] = tolower(string[i]);
+   }
+   return;
+
+}

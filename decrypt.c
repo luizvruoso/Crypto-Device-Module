@@ -187,6 +187,8 @@ void decrypt(char *string,int size_of_string, char* localKey, char* iv){
     
     test_skcipher(aux, localKey, iv);
     
+    memset(string, 0, 100);
+
     strcpy(string, aux);
 	
     print_hex_dump(KERN_DEBUG, "Result Data Decrypt: ", DUMP_PREFIX_NONE, 16, 1, aux, 16, true);
