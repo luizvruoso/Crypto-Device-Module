@@ -1,3 +1,13 @@
+
+/*
+   Gabriel Gonçalves Mattos Santini -  18189084
+	Luiz Vinicius dos Santos Ruoso - 18233486
+   Marcelo Germani Olmos -  18048298    
+   Victor Felipe dos Santos -  18117820
+   Victor Luiz Fraga Soldera - 18045674
+*/
+
+
 #include <linux/init.h>    // Macros used to mark up functions e.g. __init __exit
 #include <linux/module.h>  // Core header for loading LKMs into the kernel
 #include <linux/device.h>  // Header to support the kernel Driver Model
@@ -142,17 +152,22 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
    {
    case 'c':
       encrypt(message + 2, size_of_message - 2, key, iv);
+      size_of_message = 16;
+
       break;
    case 'd':
       decrypt(message + 2, size_of_message - 2, key, iv);
+      size_of_message = 16;
+
       break;
    case 'h':
       hash(message + 2, size_of_message - 2, key, iv);
+      size_of_message = 20;
+
       break;
    }
 
    //printk("DEV READ: %d \n", strlen(message)-2);
-   size_of_message = 16;
 
    error_count = copy_to_user(buffer, message + 2, size_of_message);
 

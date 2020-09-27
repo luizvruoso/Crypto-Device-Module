@@ -1,4 +1,3 @@
-
 #include <linux/init.h>           // Macros used to mark up functions e.g. __init __exit
 #include <linux/module.h>         // Core header for loading LKMs into the kernel
 #include <linux/device.h>         // Header to support the kernel Driver Model
@@ -101,7 +100,8 @@ static int test_skcipher(char msgToDecrypt[], char keyFromUser[], char ivFromUse
     print_hex_dump(KERN_DEBUG, "KEY: ", DUMP_PREFIX_NONE, 16, 1, key, 16, true);
 			
     /* IV will be random */
-    ivdata = kmalloc(16, GFP_KERNEL);
+    //ivdata = kmalloc(16, GFP_KERNEL);
+    ivdata = vmalloc(16);
     if (!ivdata) {
         pr_info("could not allocate ivdata\n");
         goto out;
@@ -114,7 +114,8 @@ static int test_skcipher(char msgToDecrypt[], char keyFromUser[], char ivFromUse
 
 
     /* Input data will be random */
-    scratchpad = kmalloc(16, GFP_KERNEL);
+    //scratchpad = kmalloc(16, GFP_KERNEL);
+    scratchpad = vmalloc(16);
     if (!scratchpad) {
         pr_info("could not allocate scratchpad\n");
         goto out;
@@ -160,9 +161,9 @@ out:
     if (req)
         skcipher_request_free(req);
     if (ivdata)
-        kfree(ivdata);
+        vfree(ivdata);
     if (scratchpad)
-        kfree(scratchpad);
+        vfree(scratchpad);
     return ret;
 }
 
@@ -171,21 +172,24 @@ void decrypt(char *string,int size_of_string, char* localKey, char* iv){
 	printk(KERN_INFO "Chave Decrypt %s \n",localKey);	
 
     int i = 0;
+    char aux[33]={0};
+    //memcpy(aux, 0, 33);
 
-    memcpy(string, 0, 33);
-
-    strcpy(string, "df415e408da1fe7a82a92bc857eb17b1");
+    //strcpy(string, "df415e408da1fe7a82a92bc857eb17b1");
 
 
     for(i = 0; i < 16; i++) {
-        string[i] = hex_to_ascii(string[2*i],string[(2*i)+1]);
+        aux[i] = hex_to_ascii(string[2*i],string[(2*i)+1]);
     }
 
-    print_hex_dump(KERN_DEBUG, "Result Data Decrypt: ", DUMP_PREFIX_NONE, 16, 1,string, 16, true);
     
-    test_skcipher(string, localKey, iv);
+    print_hex_dump(KERN_DEBUG, "AUX result em hexa: ", DUMP_PREFIX_NONE, 32, 1, aux, 32, true);
+    
+    test_skcipher(aux, localKey, iv);
+    
+    strcpy(string, aux);
 	
-    print_hex_dump(KERN_DEBUG, "Result Data Decrypt: ", DUMP_PREFIX_NONE, 16, 1, string, 16, true);
+    print_hex_dump(KERN_DEBUG, "Result Data Decrypt: ", DUMP_PREFIX_NONE, 16, 1, aux, 16, true);
 
 	return;
 }
@@ -212,4 +216,3 @@ int hex_to_ascii(char c, char d){
         return high+low;
 
 }
-
