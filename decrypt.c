@@ -1,3 +1,13 @@
+
+
+/*
+   Gabriel Gonçalves Mattos Santini -  18189084
+	Luiz Vinicius dos Santos Ruoso - 18233486
+   Marcelo Germani Olmos -  18048298    
+   Victor Felipe dos Santos -  18117820
+   Victor Luiz Fraga Soldera - 18045674
+*/
+
 #include <linux/init.h>           // Macros used to mark up functions e.g. __init __exit
 #include <linux/module.h>         // Core header for loading LKMs into the kernel
 #include <linux/device.h>         // Header to support the kernel Driver Model
