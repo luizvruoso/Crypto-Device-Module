@@ -95,9 +95,6 @@ static int test_skcipher(char msgToDecrypt[], char keyFromUser[], char ivFromUse
 
     skcipher_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,crypto_req_done, &sk.wait);
 
-    /* AES 256 with random key */
-    /*PARA AES 128 SELECT 16 BYTES RANDOM*/
-    //get_random_bytes(&key, 32);
 	strcpy(key, keyFromUser);
 
     //ao invés de skcipher, key mudar para key, skcipher para decriptografar
@@ -109,34 +106,28 @@ static int test_skcipher(char msgToDecrypt[], char keyFromUser[], char ivFromUse
 
     print_hex_dump(KERN_DEBUG, "KEY: ", DUMP_PREFIX_NONE, 16, 1, key, 16, true);
 			
-    /* IV will be random */
-    //ivdata = kmalloc(16, GFP_KERNEL);
     ivdata = vmalloc(16);
     if (!ivdata) {
         pr_info("could not allocate ivdata\n");
         goto out;
     }
-    //get_random_bytes(ivdata, 16);
+
 	strcpy(ivdata, ivFromUser);
 
     print_hex_dump(KERN_DEBUG, "IVdata: ", DUMP_PREFIX_NONE, 16, 1,
                ivdata, 16, true);
 
 
-    /* Input data will be random */
-    //scratchpad = kmalloc(16, GFP_KERNEL);
     scratchpad = vmalloc(16);
     if (!scratchpad) {
         pr_info("could not allocate scratchpad\n");
         goto out;
     }
-    //get_random_bytes(scratchpad, 16);
+
 	strcpy(scratchpad, msgToDecrypt); // copiando string para cifrar
     
     
     printk("String para decriptar:%s", msgToDecrypt); 
-
-    //memcpy(scratchpad, "aloha", 6);
 
 
     print_hex_dump(KERN_DEBUG, "Scratchpad: ", DUMP_PREFIX_NONE, 16, 1, scratchpad, 16, true);
@@ -183,10 +174,6 @@ void decrypt(char *string,int size_of_string, char* localKey, char* iv){
 
     int i = 0;
     char aux[33]={0};
-    //memcpy(aux, 0, 33);
-
-    //strcpy(string, "df415e408da1fe7a82a92bc857eb17b1");
-
 
     for(i = 0; i < 16; i++) {
         aux[i] = hex_to_ascii(string[2*i],string[(2*i)+1]);

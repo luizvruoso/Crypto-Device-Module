@@ -168,10 +168,8 @@ void readFromModule(int fd, int size){
       return errno;
 
    }
-   //printf("TEST receive : %d \n", receive);
    DumpHex(receive, size);
 
-   //printf("End of the program\n");
 }
 
 void callEncriptacao(int fd){
@@ -181,7 +179,6 @@ void callEncriptacao(int fd){
    int ret;
    lerString(aux);
    
-   //printf("\n conteudo string %s", aux);
    stringToSend[0] = 'c';
    stringToSend[1] = ' ';
    strcpy(stringToSend+2, aux);
@@ -224,12 +221,10 @@ void callHashResume(int fd){
    toLower(aux);
 
    
-   //printf("%s \n", aux);
-   //DumpHex(aux, 40);
+
    stringToSend[0] = 'h';
    stringToSend[1] = ' ';
    strcpy(stringToSend+2, aux);
-   //stringToSend[45]= '\0';
    
    writeToModule(fd, stringToSend);
    readFromModule(fd, 20);

@@ -6,9 +6,6 @@
    Victor Luiz Fraga Soldera - 18045674
 */
 
-
-
-
 #include <linux/init.h>           // Macros used to mark up functions e.g. __init __exit
 #include <linux/module.h>         // Core header for loading LKMs into the kernel
 #include <linux/device.h>         // Header to support the kernel Driver Model
@@ -28,7 +25,6 @@
 #include <linux/err.h>
 #include <linux/vmalloc.h>
 
-/* tie all data structures together */
 struct skcipher_def {
     struct scatterlist sg; 
     struct crypto_skcipher *tfm;
@@ -44,7 +40,6 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
 
 
 
-/* Perform cipher operation */
 static unsigned int test_skcipher_encdec(struct skcipher_def *sk, int enc)
 {
     int rc;
@@ -65,7 +60,6 @@ static unsigned int test_skcipher_encdec(struct skcipher_def *sk, int enc)
 
 
 
-/* Initialize and trigger cipher operation */
 static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUser[]) //Inicia a encriptção da string
 {
     struct skcipher_def sk;
@@ -98,9 +92,7 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
     	crypto_req_done,
         &sk.wait);
 
-    /* AES 256 with random key */
-    /*PARA AES 128 SELECT 16 BYTES RANDOM*/
-    //get_random_bytes(&key, 32);
+
 	strcpy(key, keyFromUser);
     if (crypto_skcipher_setkey(skcipher, key, 16)) {
         pr_info("key could not be set\n");
@@ -112,30 +104,22 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
 			
 		
 
-    /* IV will be random */
     ivdata = vmalloc(16);
     if (!ivdata) {
         pr_info("could not allocate ivdata\n");
         goto out;
     }
-    //get_random_bytes(ivdata, 16);
+
 	strcpy(ivdata, ivFromUser);
 
-    //print_hex_dump(KERN_DEBUG, "IVdata: ", DUMP_PREFIX_NONE, 16, 1, ivdata, 16, true);
-
-
-    /* Input data will be random */
     scratchpad = vmalloc(16);
     if (!scratchpad) {
         pr_info("could not allocate scratchpad\n");
         goto out;
     }
-    //get_random_bytes(scratchpad, 16);
+
 	strcpy(scratchpad, msgToEncypt); // copiando string para cifrar
-    //memcpy(scratchpad, "aloha", 6);
 
-
-    //print_hex_dump(KERN_DEBUG, "Scratchpad: ", DUMP_PREFIX_NONE, 16, 1, scratchpad, 16, true);
 
     sk.tfm = skcipher;
     sk.req = req;
@@ -153,7 +137,6 @@ static int test_skcipher( char msgToEncypt[], char keyFromUser[], char ivFromUse
 
 
 	resultdata = sg_virt(&sk.sg);
-    //print_hex_dump(KERN_DEBUG, "Result Data Direct From Function: ", DUMP_PREFIX_NONE, 16, 1, resultdata, 16, true);
    
     strcpy(msgToEncypt, resultdata);
     pr_info("Encryption triggered successfully\n");
@@ -172,11 +155,12 @@ out:
 
 
 void encrypt(char *string,int size_of_string ,char* localKey, char* iv){
-	//printk(KERN_INFO "Chave %s \n",localKey);	
-print_hex_dump(KERN_DEBUG, "Result Data1: ", DUMP_PREFIX_NONE, 16, 1,
+    print_hex_dump(KERN_DEBUG, "String before: ", DUMP_PREFIX_NONE, 16, 1,
                string, 16, true);
+
     test_skcipher(string, localKey, iv);
-    print_hex_dump(KERN_DEBUG, "Result Data: ", DUMP_PREFIX_NONE, 16, 1,
+
+    print_hex_dump(KERN_DEBUG, "String after: ", DUMP_PREFIX_NONE, 16, 1,
                string, 16, true);
 	return;
 }
